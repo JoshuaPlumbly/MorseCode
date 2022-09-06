@@ -1,7 +1,9 @@
 #include "MorseCode.h"
 
+using std::cout;
+
 int main()
 {
-    std::cout << EncodeMorseCode("The quick brown fox jumps over the lazy dog");
-    std::cout << '\n' << DecodeMorseCode("- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..- / .--- ..- -- .--. ... / --- ...- . .-. / - .... . / .-.. .- --.. -.-- / -.. --- --.");
+    cout << MorseCode::Encode("The quick brown fox jumps over the lazy dog");
+    cout << '\n' << MorseCode::Decode("- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..- / .--- ..- -- .--. ... / --- ...- . .-. / - .... . / .-.. .- --.. -.-- / -.. --- --.");
 }

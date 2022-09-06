@@ -1,113 +1,118 @@
 #include "MorseCode.h"
 
-const string _morse[59] = {
-    SPACE, // space
-    "-.-.--", // !
-    ".-..-.", // "
-    INVALID, // #
-    "...-..-", // $
-    INVALID, // %
-    ".-...", // &
-    ".----.", // '
-    "-.--.", // (
-    "-.--.-", // )
-    INVALID, // *
-    ".-.-.", // +
-    "--..--", // ,
-    "-....-", // -
-    ".-.-.-", // .
-    "-..-.", // /
-    
-    "-----", // 0...
-    ".----",
-    "..---",
-    "...--",
-    "....-",
-    ".....",
-    "-....",
-    "--...",
-    "---..",
-    "----.", // ...9
-    
-    "---...", // :
-    "-.-.-.", // ;
-    INVALID, // <
-    "-...-", // =
-    INVALID, // >
-    "..--..", // ?
-    ".--.-.", // @
-
-    ".-", // A...
-    "-...",
-    "-.-.",
-    "-..",
-    ".",
-    "..-.",
-    "--.",
-    "....",
-    "..",
-    ".---",
-    "-.-",
-    ".-..",
-    "--",
-    "-.",
-    "---",
-    ".--.",
-    "--.-",
-    ".-.",
-    "...",
-    "-",
-    "..-",
-    "...-",
-    ".--",
-    "-..-",
-    "-.--",
-    "--.." // ...Z
-};
-
-string DecodeMorseCode(const string& str)
+namespace MorseCode
 {
-    stringstream ss = stringstream();
-    map<string, char> mp;
-    
-    for (size_t i = 0; i < 59; i++)
-    {
-        mp[_morse[i]] = i + 32;
-    }
-        
-    char* token;
-    char* rest = _strdup(str.c_str());
+    const char* _morse[59] = {
+        SPACE, // space
+        "-.-.--", // !
+        ".-..-.", // "
+        INVALID, // #
+        "...-..-", // $
+        INVALID, // %
+        ".-...", // &
+        ".----.", // '
+        "-.--.", // (
+        "-.--.-", // )
+        INVALID, // *
+        ".-.-.", // +
+        "--..--", // ,
+        "-....-", // -
+        ".-.-.-", // .
+        "-..-.", // /
 
-    while ((token = strtok_s(rest, " ", &rest)))
-    {
-        auto iter = mp.find(token);
+        "-----", // 0...
+        ".----",
+        "..---",
+        "...--",
+        "....-",
+        ".....",
+        "-....",
+        "--...",
+        "---..",
+        "----.", // ...9
 
-        if (iter != mp.end())
-            ss << iter->second;
-        else if (token == SPACE)
-            ss << ' ';
+        "---...", // :
+        "-.-.-.", // ;
+        INVALID, // <
+        "-...-", // =
+        INVALID, // >
+        "..--..", // ?
+        ".--.-.", // @
+
+        ".-", // A...
+        "-...",
+        "-.-.",
+        "-..",
+        ".",
+        "..-.",
+        "--.",
+        "....",
+        "..",
+        ".---",
+        "-.-",
+        ".-..",
+        "--",
+        "-.",
+        "---",
+        ".--.",
+        "--.-",
+        ".-.",
+        "...",
+        "-",
+        "..-",
+        "...-",
+        ".--",
+        "-..-",
+        "-.--",
+        "--.." // ...Z
+    };
+
+    const char* EncodeChar(char ch)
+    {
+        char upperCh = toupper(ch);
+
+        if (upperCh >= 32 && upperCh <= 90)
+            return _morse[upperCh - 32];
         else
-            ss << INVALID;
+            return INVALID;
     }
-        
-    return ss.str();
-}
 
-string EncodeMorseCode(const string& str)
-{
-    stringstream ss = stringstream();
-
-    for (size_t i = 0; i < str.length(); i++)
+    string Decode(const string& str)
     {
-        char ch = toupper(str[i]);
+        stringstream ss = stringstream();
+        map<string, char> mp;
 
-        if (ch >= 32 && ch <= 90)
-            ss << _morse[ch - 32];
-        else
-            ss << INVALID;
+        for (size_t i = 0; i < 59; i++)
+        {
+            mp[_morse[i]] = i + 32;
+        }
 
-        ss << SEPARATOR;
+        char* token;
+        char* rest = _strdup(str.c_str());
+
+        while ((token = strtok_s(rest, " ", &rest)))
+        {
+            auto iter = mp.find(token);
+            if (iter != mp.end())
+                ss << iter->second;
+            else if (token == SPACE)
+                ss << ' ';
+            else
+                ss << INVALID;
+        }
+
+        return ss.str();
     }
 
-    return ss.str();
+    string Encode(const string& str)
+    {
+        stringstream ss = stringstream();
+
+        for (size_t i = 0; i < str.length(); i++)
+        {
+            ss << EncodeChar(str[i]) << SEPARATOR;
+        }
+
+        return ss.str();
+    }
 }

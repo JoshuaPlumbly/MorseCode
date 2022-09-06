@@ -3,20 +3,26 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <fstream>
 
 using std::string;
 using std::stringstream;
 using std::map;
 using std::vector;
+using std::ifstream;
 
-const string DASH = "-";
-const string DOT = ".";
-const string SPACE = "/";
-const string INVALID = "#";
-const string SEPARATOR = " ";
+namespace MorseCode
+{
+	static const char* DASH = "-";
+	static const char* DOT = ".";
+	static const char* SPACE = "/";
+	static const char* INVALID = "#";
+	static const char* SEPARATOR = " ";
 
-const string SOS = "...---...";
-const string EndOfMessage = ".-.-.";
+	static const char* SOS = "...---...";
+	static const char* EndOfMessage = ".-.-.";
 
-string DecodeMorseCode(const string& str);
-string EncodeMorseCode(const string& str);
+	const char* EncodeChar(char ch);
+	string Decode(const string& str);
+	string Encode(const string& str);
+}
