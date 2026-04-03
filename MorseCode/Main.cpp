@@ -1,87 +1,66 @@
-#include "MorseCode.h"
-#include <stdio.h>
 #include <iostream>
-#include <string>
-#include <cstring>
+#include <fstream>
 
-using std::cout;
-using std::cin;
+#include "cli.h"
+#include "morse.h"
 
-const char* encodeArg = "encode";
-const char* decodeArg = "decode";
+int main(int argc, char* argv[]) {
+    // Define allowed options
+    std::vector<OptionSpec> specs = {
+        {"--output", "-o", true},
+        {"--input",  "-i", true},
+        {"--verbose","-v", false}
+    };
 
-int main(int argc, char** argv)
-{
-    if (argc == 1)
-    {
-        string str;
+    bool success;
+    ParsedArgs args = parseArgs(argc, argv, specs, success);
 
-        do
-        {
-            cout << "Using your number keys, select one of the following option:\n\n";
-            
-            cout << "1. Encode - Converts standard text to morse code.\n";
-            cout << "2. Decode - Converts morse code to standard text.\n";
-            cout << "3. Exit - close session.\n";
+    if (!success) return 1;
 
-            cout << "\n\nSelect option number: ";
-            cin >> str;
-
-            if (str == "1")
-            {
-                cout << "\nEnter standered text to convert to morse code:\n\n";
-                cin.ignore();
-                getline(cin, str);
-
-                cout << "\nOutput:\n";
-                cout << MorseCode::Encode(str) << "\n\n";
-            }
-            else if (str == "2")
-            {
-                cout << "\nEnter morse code to convert to standered text:\n\n";
-                cin.ignore();
-                getline(cin, str);
-
-                cout << "\nOutput:\n";
-                cout << MorseCode::Decode(str) << "\n\n";
-            }
-            else if (str == "3")
-            {
-                return 0;
-            }
-            else
-            {
-                cout << "\nInvalide responce.\n\n";
-            }
-        } while (true);
+    if (args.command.empty() || args.command == "help") {
+        std::cout << "Usage:\n";
+        std::cout << "  morse encode \"text\" [-o file]\n";
+        std::cout << "  morse decode \"morse\" [-i file]\n";
+        return 0;
     }
-    else if(*argv[1] == *encodeArg)
-    {
-        if (argc > 2)
-        {
-            cout << MorseCode::Encode(argv[2]);
-            return 0;
-        }
 
-        string str;
-        cout << "Enter standered text to convert to morse code:\n\n";
-        getline(cin, str);
-        cout << "\nOutput:\n";
-        cout << MorseCode::Encode(str);
+    std::string input;
+
+    if (args.options.count("--input")) {
+        std::ifstream file(args.options["--input"]);
+        if (!file) {
+            std::cerr << "Error: Cannot open input file\n";
+            return 1;
+        }
+        std::getline(file, input, '\0');
     }
-    else if (*argv[1] == *decodeArg)
-    {
-        if (argc > 2)
-        {
-            cout << MorseCode::Decode(argv[2]);
-            return 0;
-        }
+    else {
+        input = join(args.positional);
+    }
 
-        string str;
-        cout << "Enter morse code to convert to standered text:\n\n";
-        getline(cin, str);
-        cout << "\nOutput:\n";
-        cout << MorseCode::Decode(str);
+    std::string result;
+
+    if (args.command == "encode") {
+        result = morse::encode(input);
+    }
+    else if (args.command == "decode") {
+        result = morse::decode(input);
+    }
+    else {
+        std::cerr << "Unknown command\n";
+        return 1;
+    }
+
+    if (args.flags.count("--verbose")) {
+        std::cout << "[DEBUG] Input: " << input << "\n";
+    }
+
+    if (args.options.count("--output")) {
+        std::ofstream file(args.options["--output"]);
+        file << result;
+    }
+    else {
+        std::cout << result << "\n";
     }
 
     return 0;

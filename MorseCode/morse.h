@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MORSE_H
+#define MORSE_H
+
 #include <iostream>
 #include <sstream>
 #include <map>
@@ -11,7 +13,7 @@ using std::map;
 using std::vector;
 using std::ifstream;
 
-namespace MorseCode
+namespace morse
 {
 	static const char* DASH = "-";
 	static const char* DOT = ".";
@@ -32,7 +34,9 @@ namespace MorseCode
 	static const char* Understood = "...-.";
 	static const char* SOS = "...---...";
 
-	const char* EncodeChar(char ch);
-	string Decode(const string& str);
-	string Encode(const string& str);
+	const char* encodeChar(char ch);
+	string decode(const string& str);
+	string encode(const string& str);
 }
+
+#endif

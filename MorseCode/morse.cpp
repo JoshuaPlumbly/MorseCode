@@ -1,6 +1,6 @@
-#include "MorseCode.h"
+#include "morse.h"
 
-namespace MorseCode
+namespace morse
 {
     const char* _morse[59] = {
         SPACE, // space
@@ -67,7 +67,7 @@ namespace MorseCode
         "--.." // ...Z
     };
 
-    const char* EncodeChar(char ch)
+    const char* encodeChar(char ch)
     {
         char upperCh = toupper(ch);
 
@@ -77,7 +77,7 @@ namespace MorseCode
             return INVALID;
     }
 
-    string Decode(const string& str)
+    string decode(const string& str)
     {
         stringstream ss = stringstream();
         map<string, char> mp;
@@ -104,13 +104,13 @@ namespace MorseCode
         return ss.str();
     }
 
-    string Encode(const string& str)
+    string encode(const string& str)
     {
         stringstream ss = stringstream();
 
         for (size_t i = 0; i < str.length(); i++)
         {
-            ss << EncodeChar(str[i]) << SEPARATOR;
+            ss << encodeChar(str[i]) << SEPARATOR;
         }
 
         return ss.str();
