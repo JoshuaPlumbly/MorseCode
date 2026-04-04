@@ -35,8 +35,10 @@ namespace morse
 	static const char* SOS = "...---...";
 
 	const char* encodeChar(char ch);
-	string decode(const string& str);
 	string encode(const string& str);
+	string decode(const string& str);
+	string encode(const string& str, char dot, char dash, char space);
+	string decode(string& str, char dot, char dash, char space);
 }
 
 #endif

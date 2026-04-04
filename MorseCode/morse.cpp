@@ -77,6 +77,18 @@ namespace morse
             return INVALID;
     }
 
+    string encode(const string& str)
+    {
+        stringstream ss = stringstream();
+
+        for (size_t i = 0; i < str.length(); i++)
+        {
+            ss << encodeChar(str[i]) << SEPARATOR;
+        }
+
+        return ss.str();
+    }
+
     string decode(const string& str)
     {
         stringstream ss = stringstream();
@@ -104,15 +116,36 @@ namespace morse
         return ss.str();
     }
 
-    string encode(const string& str)
-    {
-        stringstream ss = stringstream();
+    string encode(const string& str, char dot, char dash, char space) {
+        string morseCode = encode(str);
 
-        for (size_t i = 0; i < str.length(); i++)
-        {
-            ss << encodeChar(str[i]) << SEPARATOR;
+        for (char& c : morseCode) {
+            if (c == '.')
+                c = dot;
+
+            if (c == '-')
+                c = dash;
+
+            if (c == '/')
+                c = space;
         }
 
-        return ss.str();
+        return morseCode;
+    }
+
+    string decode(string& str, char dot, char dash, char space) {
+
+        for (char& c : str) {
+            if (c == dot)
+                c = '.';
+
+            if (c == dash)
+                c = '-';
+
+            if (c == space)
+                c = '/';
+        }
+
+        return decode(str);
     }
 }

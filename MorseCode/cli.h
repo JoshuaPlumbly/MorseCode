@@ -29,4 +29,6 @@ ParsedArgs parseArgs(
 
 std::string join(const std::vector<std::string>& vec);
 
+char getCharOption(const ParsedArgs& args, const std::string& optionName, char defaultChar);
+
 #endif

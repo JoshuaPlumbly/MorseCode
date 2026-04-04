@@ -9,7 +9,11 @@ int main(int argc, char* argv[]) {
     std::vector<OptionSpec> specs = {
         {"--output", "-o", true},
         {"--input",  "-i", true},
-        {"--verbose","-v", false}
+        {"--verbose","-v", false},
+        {"--dot", "", true},
+        {"--dash","", true},
+        {"--space","", true},
+        {"--g","-g", false}
     };
 
     bool success;
@@ -40,11 +44,64 @@ int main(int argc, char* argv[]) {
 
     std::string result;
 
-    if (args.command == "encode") {
-        result = morse::encode(input);
-    }
-    else if (args.command == "decode") {
-        result = morse::decode(input);
+    if (args.command == "encode" || args.command == "decode") {
+        char dot = '.';
+        char dash = '-';
+        char space = '/';
+        bool isCustomCharUsed = false;
+
+        if (args.flags.count("--g"))
+        {
+            dot = 'g';
+            dash = 'G';
+            isCustomCharUsed = true;
+        }
+
+        if (args.options.count("--dot")) {
+            isCustomCharUsed = true;
+
+            try {
+                dot = getCharOption(args, "--dot", dot);
+            }
+            catch (const std::invalid_argument& e) {
+                std::cerr << "Error:" << e.what() << std::endl;
+            }
+        }
+
+        if (args.options.count("--dash")) {
+            isCustomCharUsed = true;
+
+            try {
+                dash = getCharOption(args, "--dash", dash);
+            }
+            catch (const std::invalid_argument& e) {
+                std::cerr << "Error:" << e.what() << std::endl;
+            }
+        }
+
+        if (args.options.count("--space")) {
+            isCustomCharUsed = true;
+
+            try {
+                space = getCharOption(args, "--space", space);
+            }
+            catch (const std::invalid_argument& e) {
+                std::cerr << "Error:" << e.what() << std::endl;
+            }
+        }
+
+        if (args.command == "encode") {
+            if (isCustomCharUsed)
+                result = morse::encode(input, dot, dash, space);
+            else
+                result = morse::encode(input);
+        }
+        else {
+            if (isCustomCharUsed)
+                result = morse::decode(input, dot, dash, space);
+            else
+                result = morse::decode(input);
+        }
     }
     else {
         std::cerr << "Unknown command\n";
@@ -53,6 +110,7 @@ int main(int argc, char* argv[]) {
 
     if (args.flags.count("--verbose")) {
         std::cout << "[DEBUG] Input: " << input << "\n";
+        std::cout << "[DEBUG] Result: " << result << "\n";
     }
 
     if (args.options.count("--output")) {
